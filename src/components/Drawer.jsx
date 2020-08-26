@@ -1,17 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import MDrawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
-import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
-import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
-import HeadsetOutlinedIcon from '@material-ui/icons/HeadsetOutlined';
-import SvgIcon from '@material-ui/core/SvgIcon';
+import {
+  ExpandLess,
+  ExpandMore,
+  ShoppingCartOutlined,
+  SettingsOutlined,
+  LocalMallOutlined,
+  HeadsetOutlined,
+  CreditCardOutlined,
+  DashboardOutlined,
+  StarBorder,
+  ExitToApp,
+} from '@material-ui/icons';
+import {
+  SvgIcon,
+  ListItemIcon,
+  ListItemText,
+  ListItem,
+  List,
+  Drawer as MDrawer,
+  Collapse,
+} from '@material-ui/core';
 
 import { ReactComponent as BoxIcon } from '../box.svg';
 
@@ -39,10 +49,22 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     height: '100%',
   },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 const Drawer = () => {
   const classes = useStyles();
+
+  const [open, setOpen] = React.useState({
+    orders: false,
+    settings: false,
+  });
+
+  const handleClick = (name) => () => {
+    setOpen({ ...open, [name]: !open[name] });
+  };
 
   return (
     <MDrawer
@@ -52,49 +74,77 @@ const Drawer = () => {
       }}
       variant="permanent"
       anchor="left">
-      <div className={`${classes.drawerHeading} ${classes.toolbar}`}>
-        Procuretail
-      </div>
+      <div className={`${classes.drawerHeading} ${classes.toolbar}`}>Procuretail</div>
       <List className={classes.listItemContainer}>
         <ListItem button>
           <ListItemIcon>
-            <DashboardOutlinedIcon />
+            <DashboardOutlined />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button>
+
+        <ListItem button component={Link} to={'/myproduct'}>
           <ListItemIcon>
             <SvgIcon component={BoxIcon} viewBox="0 0 128 128" />
           </ListItemIcon>
           <ListItemText primary="My Product" />
         </ListItem>
+
         <ListItem button>
           <ListItemIcon>
-            <ShoppingCartOutlinedIcon />
+            <ShoppingCartOutlined />
           </ListItemIcon>
           <ListItemText primary="Warehouse" />
         </ListItem>
-        <ListItem button>
+
+        <ListItem button onClick={handleClick('orders')}>
           <ListItemIcon>
-            <LocalMallOutlinedIcon />
+            <LocalMallOutlined />
           </ListItemIcon>
           <ListItemText primary="Orders" />
+          {open.orders ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <ListItem button>
+
+        <Collapse in={open.orders} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Starred" />
+            </ListItem>
+          </List>
+        </Collapse>
+
+        <ListItem button component={Link} to={'/payments'}>
           <ListItemIcon>
-            <CreditCardOutlinedIcon />
+            <CreditCardOutlined />
           </ListItemIcon>
           <ListItemText primary="Payments" />
         </ListItem>
-        <ListItem button>
+
+        <ListItem button onClick={handleClick('settings')}>
           <ListItemIcon>
-            <SettingsOutlinedIcon />
+            <SettingsOutlined />
           </ListItemIcon>
           <ListItemText primary="Settings" />
+          {open.settings ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
+
+        <Collapse in={open.settings} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <ExitToApp />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </List>
+        </Collapse>
+
         <ListItem button style={{ marginTop: 'auto' }}>
           <ListItemIcon>
-            <HeadsetOutlinedIcon />
+            <HeadsetOutlined />
           </ListItemIcon>
           <ListItemText primary="Support" />
         </ListItem>

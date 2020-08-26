@@ -29,7 +29,7 @@ const AppBar = () => {
   const classes = useStyles();
 
   return (
-    <MAppBar position="fixed" className={classes.appBar} color="white">
+    <MAppBar position="fixed" className={classes.appBar} color="inherit">
       <Toolbar>
         <div className={classes.title} />
         <IconButton aria-label="show 17 new notifications" color="inherit">
